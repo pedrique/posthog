@@ -10,7 +10,7 @@ jest.mock('../../src/main/graphile-worker/schedule')
 
 describe('stringToPluginServerMode', () => {
     test('gives the right value for ingestion -> PluginServerMode.plugins_ingestion', () => {
-        expect(stringToPluginServerMode['ingestion']).toEqual(PluginServerMode.plugins_ingestion)
+        expect(stringToPluginServerMode['ingestion']).toEqual(PluginServerMode.ingestion)
     })
 
     test('gives undefined for invalid input', () => {

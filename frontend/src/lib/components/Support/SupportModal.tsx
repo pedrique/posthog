@@ -88,6 +88,32 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
         },
     })
 
+    const {
+        setFilesToUpload: setFilesToUpload2,
+        filesToUpload: filesToUpload2,
+        uploading: uploading2,
+    } = useUploadFiles({
+        onUpload: (url, fileName) => {
+            setSendSupportRequestValue('message2', sendSupportRequest.message + `\n\nAttachment "${fileName}": ${url}`)
+        },
+        onError: (detail) => {
+            lemonToast.error(`Error uploading image: ${detail}`)
+        },
+    })
+
+    const {
+        setFilesToUpload: setFilesToUpload3,
+        filesToUpload: filesToUpload3,
+        uploading: uploading3,
+    } = useUploadFiles({
+        onUpload: (url, fileName) => {
+            setSendSupportRequestValue('message3', sendSupportRequest.message + `\n\nAttachment "${fileName}": ${url}`)
+        },
+        onError: (detail) => {
+            lemonToast.error(`Error uploading image: ${detail}`)
+        },
+    })
+
     return (
         <LemonModal
             isOpen={isSupportFormOpen}
@@ -188,9 +214,9 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
                                             accept="image/*"
                                             multiple={false}
                                             alternativeDropTargetRef={dropRef}
-                                            onChange={setFilesToUpload}
-                                            loading={uploading}
-                                            value={filesToUpload}
+                                            onChange={setFilesToUpload2}
+                                            loading={uploading2}
+                                            value={filesToUpload2}
                                         />
                                     )}
                                 </div>
@@ -216,9 +242,9 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
                                             accept="image/*"
                                             multiple={false}
                                             alternativeDropTargetRef={dropRef}
-                                            onChange={setFilesToUpload}
-                                            loading={uploading}
-                                            value={filesToUpload}
+                                            onChange={setFilesToUpload3}
+                                            loading={uploading3}
+                                            value={filesToUpload3}
                                         />
                                     )}
                                 </div>

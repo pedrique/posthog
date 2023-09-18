@@ -91,7 +91,7 @@ export function HelpButton({
     const { openSupportForm } = useActions(supportLogic)
     const { preflight } = useValues(preflightLogic)
 
-    const showSupportOptions: boolean = preflight?.cloud || false
+    const showSupportOptions: boolean = preflight?.cloud || true
 
     if (contactOnly && !showSupportOptions) {
         return null // We don't offer support for self-hosted instances

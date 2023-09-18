@@ -12,6 +12,7 @@ import { captureException } from '@sentry/react'
 import { preflightLogic } from 'scenes/PreflightCheck/preflightLogic'
 import { teamLogic } from 'scenes/teamLogic'
 import * as Sentry from '@sentry/react'
+import { EXTENDED_SUPPORT_TOPICS } from './SupportModal'
 
 function getSessionReplayLink(): string {
     const link = posthog
@@ -117,13 +118,17 @@ export const supportLogic = kea<supportLogicType>([
             email: string,
             kind: SupportTicketKind | null,
             target_area: string | null,
-            message: string
+            message: string,
+            message2: string,
+            message3: string
         ) => ({
             name,
             email,
             kind,
             target_area,
             message,
+            message2,
+            message3,
         }),
     })),
     reducers(() => ({
@@ -142,18 +147,28 @@ export const supportLogic = kea<supportLogicType>([
                 kind: SupportTicketKind | null
                 target_area: SupportTicketTargetArea | null
                 message: string
+                message2: string
+                message3: string
             },
-            errors: ({ message, kind, target_area }) => {
+            errors: ({ message, message2, message3, kind, target_area }) => {
                 return {
                     message: !message ? 'Please enter a message' : '',
+                    message2:
+                        !message2 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                            ? 'Please enter a message'
+                            : '',
+                    message3:
+                        !message3 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                            ? 'Please enter a message'
+                            : '',
                     kind: !kind ? 'Please choose' : undefined,
                     target_area: !target_area ? 'Please choose' : undefined,
                 }
             },
-            submit: async ({ kind, target_area, message }) => {
+            submit: async ({ kind, target_area, message, message2, message3 }) => {
                 const name = userLogic.values.user?.first_name
                 const email = userLogic.values.user?.email
-                actions.submitZendeskTicket(name || '', email || '', kind, target_area, message)
+                actions.submitZendeskTicket(name || '', email || '', kind, target_area, message, message2, message3)
                 actions.closeSupportForm()
                 actions.resetSendSupportRequest()
             },
@@ -165,18 +180,28 @@ export const supportLogic = kea<supportLogicType>([
                 kind: SupportTicketKind | null
                 target_area: SupportTicketTargetArea | null
                 message: string
+                message2: string
+                message3: string
             },
-            errors: ({ name, email, message, kind, target_area }) => {
+            errors: ({ name, email, message, message2, message3, kind, target_area }) => {
                 return {
                     name: !name ? 'Please enter your name' : '',
                     email: !email ? 'Please enter your email' : '',
                     message: !message ? 'Please enter a message' : '',
+                    message2:
+                        !message2 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                            ? 'Please enter a message'
+                            : '',
+                    message3:
+                        !message3 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                            ? 'Please enter a message'
+                            : '',
                     kind: !kind ? 'Please choose' : undefined,
                     target_area: !target_area ? 'Please choose' : undefined,
                 }
             },
-            submit: async ({ name, email, kind, target_area, message }) => {
-                actions.submitZendeskTicket(name || '', email || '', kind, target_area, message)
+            submit: async ({ name, email, kind, target_area, message, message2, message3 }) => {
+                actions.submitZendeskTicket(name || '', email || '', kind, target_area, message, message2, message3)
                 actions.closeSupportForm()
                 actions.resetSendSupportLoggedOutRequest()
             },
@@ -188,6 +213,8 @@ export const supportLogic = kea<supportLogicType>([
                 kind,
                 target_area: target_area ?? getURLPathToTargetArea(window.location.pathname),
                 message: '',
+                message2: '',
+                message3: '',
             })
         },
         openSupportLoggedOutForm: async ({ name, email, kind, target_area }) => {
@@ -197,9 +224,11 @@ export const supportLogic = kea<supportLogicType>([
                 kind: kind ? kind : null,
                 target_area: target_area ? target_area : null,
                 message: '',
+                message2: '',
+                message3: '',
             })
         },
-        submitZendeskTicket: async ({ name, email, kind, target_area, message }) => {
+        submitZendeskTicket: async ({ name, email, kind, target_area, message, message2, message3 }) => {
             const zendesk_ticket_uuid = uuid()
             const subject =
                 SUPPORT_KIND_TO_SUBJECT[kind ?? 'support'] +
@@ -216,6 +245,8 @@ export const supportLogic = kea<supportLogicType>([
                     comment: {
                         body: (
                             message +
+                            (message2 ? '\n\n' + message2 : '') +
+                            (message3 ? '\n\n' + message3 : '') +
                             `\n\n-----` +
                             `\nKind: ${kind}` +
                             `\nTarget area: ${target_area}` +

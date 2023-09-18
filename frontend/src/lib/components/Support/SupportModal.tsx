@@ -40,18 +40,43 @@ const SUPPORT_TICKET_KIND_TO_PROMPT: Record<SupportTicketKind, string> = {
     feedback: 'What feedback do you have?',
     support: 'What can we help you with?',
 }
+const SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_1: Record<SupportTicketKind, string> = {
+    bug: "What's the bug?",
+    feedback: 'Is your feedback related to a problem?',
+    support: 'What can we help you with?',
+}
+const SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_2: Record<SupportTicketKind, string> = {
+    bug: 'How to reproduce?',
+    feedback: "Describe the solution you'd like?",
+    support: 'What is happening?',
+}
+const SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_3: Record<SupportTicketKind, string> = {
+    bug: 'Additional context? (make sure to include links if relevant)',
+    feedback: "Describe alternatives you've considered.",
+    support: 'What do you expect to happen?',
+}
+
+// topics that will ask for additional information
+export const EXTENDED_SUPPORT_TOPICS: string[] = [
+    'app_performance',
+    'analytics',
+    'data_management',
+    'apps',
+    'data_integrity',
+    'ingestion',
+]
 
 export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.Element | null {
     const { sendSupportRequest, isSupportFormOpen, sendSupportLoggedOutRequest } = useValues(supportLogic)
     const { setSendSupportRequestValue, closeSupportForm } = useActions(supportLogic)
     const { objectStorageAvailable } = useValues(preflightLogic)
 
-    if (!preflightLogic.values.preflight?.cloud) {
-        if (isSupportFormOpen) {
-            lemonToast.error(`In-app support isn't provided for self-hosted instances.`)
-        }
-        return null
-    }
+    // if (!preflightLogic.values.preflight?.cloud) {
+    //     if (isSupportFormOpen) {
+    //         lemonToast.error(`In-app support isn't provided for self-hosted instances.`)
+    //     }
+    //     return null
+    // }
     const dropRef = useRef<HTMLDivElement>(null)
 
     const { setFilesToUpload, filesToUpload, uploading } = useUploadFiles({
@@ -113,30 +138,121 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
                         }))}
                     />
                 </Field>
-                <Field
-                    name="message"
-                    label={sendSupportRequest.kind ? SUPPORT_TICKET_KIND_TO_PROMPT[sendSupportRequest.kind] : 'Content'}
-                >
-                    {(props) => (
-                        <div ref={dropRef} className="flex flex-col gap-2">
-                            <LemonTextArea
-                                placeholder="Type your message here"
-                                data-attr="support-form-content-input"
-                                {...props}
-                            />
-                            {objectStorageAvailable && (
-                                <LemonFileInput
-                                    accept="image/*"
-                                    multiple={false}
-                                    alternativeDropTargetRef={dropRef}
-                                    onChange={setFilesToUpload}
-                                    loading={uploading}
-                                    value={filesToUpload}
-                                />
+                {sendSupportRequest.target_area && EXTENDED_SUPPORT_TOPICS.includes(sendSupportRequest.target_area) ? (
+                    <>
+                        <Field
+                            name="message"
+                            label={
+                                sendSupportRequest.kind
+                                    ? SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_1[sendSupportRequest.kind]
+                                    : 'Content'
+                            }
+                        >
+                            {(props) => (
+                                <div ref={dropRef} className="flex flex-col gap-2">
+                                    <LemonTextArea
+                                        placeholder="Type your message here"
+                                        data-attr="support-form-content-input-1"
+                                        {...props}
+                                    />
+                                    {objectStorageAvailable && (
+                                        <LemonFileInput
+                                            accept="image/*"
+                                            multiple={false}
+                                            alternativeDropTargetRef={dropRef}
+                                            onChange={setFilesToUpload}
+                                            loading={uploading}
+                                            value={filesToUpload}
+                                        />
+                                    )}
+                                </div>
                             )}
-                        </div>
-                    )}
-                </Field>
+                        </Field>
+                        <Field
+                            name="message2"
+                            label={
+                                sendSupportRequest.kind
+                                    ? SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_2[sendSupportRequest.kind]
+                                    : 'Content'
+                            }
+                        >
+                            {(props) => (
+                                <div ref={dropRef} className="flex flex-col gap-2">
+                                    <LemonTextArea
+                                        placeholder="Type your message here"
+                                        data-attr="support-form-content-input-2"
+                                        {...props}
+                                    />
+                                    {objectStorageAvailable && (
+                                        <LemonFileInput
+                                            accept="image/*"
+                                            multiple={false}
+                                            alternativeDropTargetRef={dropRef}
+                                            onChange={setFilesToUpload}
+                                            loading={uploading}
+                                            value={filesToUpload}
+                                        />
+                                    )}
+                                </div>
+                            )}
+                        </Field>
+                        <Field
+                            name="message3"
+                            label={
+                                sendSupportRequest.kind
+                                    ? SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_3[sendSupportRequest.kind]
+                                    : 'Content'
+                            }
+                        >
+                            {(props) => (
+                                <div ref={dropRef} className="flex flex-col gap-2">
+                                    <LemonTextArea
+                                        placeholder="Type your message here"
+                                        data-attr="support-form-content-input-3"
+                                        {...props}
+                                    />
+                                    {objectStorageAvailable && (
+                                        <LemonFileInput
+                                            accept="image/*"
+                                            multiple={false}
+                                            alternativeDropTargetRef={dropRef}
+                                            onChange={setFilesToUpload}
+                                            loading={uploading}
+                                            value={filesToUpload}
+                                        />
+                                    )}
+                                </div>
+                            )}
+                        </Field>
+                    </>
+                ) : (
+                    <Field
+                        name="message"
+                        label={
+                            sendSupportRequest.kind ? SUPPORT_TICKET_KIND_TO_PROMPT[sendSupportRequest.kind] : 'Content'
+                        }
+                    >
+                        {(props) => (
+                            <div ref={dropRef} className="flex flex-col gap-2">
+                                <LemonTextArea
+                                    placeholder="Type your message here"
+                                    data-attr="support-form-content-input"
+                                    {...props}
+                                />
+                                {objectStorageAvailable && (
+                                    <LemonFileInput
+                                        accept="image/*"
+                                        multiple={false}
+                                        alternativeDropTargetRef={dropRef}
+                                        onChange={setFilesToUpload}
+                                        loading={uploading}
+                                        value={filesToUpload}
+                                    />
+                                )}
+                            </div>
+                        )}
+                    </Field>
+                )}
             </Form>
         </LemonModal>
     )

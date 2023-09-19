@@ -42,8 +42,8 @@ const SUPPORT_TICKET_KIND_TO_PROMPT: Record<SupportTicketKind, string> = {
 }
 const SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_1: Record<SupportTicketKind, string> = {
     bug: "What's the bug?",
-    feedback: 'Is your feedback related to a problem?',
-    support: 'What can we help you with?',
+    feedback: 'Is your feedback related to a problem? (make sure to include links if relevant)',
+    support: 'What can we help you with? (make sure to include links if relevant)',
 }
 const SUPPORT_TICKET_KIND_TO_PROMPT_EXTENDED_2: Record<SupportTicketKind, string> = {
     bug: 'How to reproduce?',

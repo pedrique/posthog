@@ -164,7 +164,8 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
                         }))}
                     />
                 </Field>
-                {sendSupportRequest.target_area && EXTENDED_SUPPORT_TOPICS.includes(sendSupportRequest.target_area) ? (
+                {sendSupportRequest.kind === 'bug' ||
+                (sendSupportRequest.target_area && EXTENDED_SUPPORT_TOPICS.includes(sendSupportRequest.target_area)) ? (
                     <>
                         <Field
                             name="message"

@@ -154,11 +154,11 @@ export const supportLogic = kea<supportLogicType>([
                 return {
                     message: !message ? 'Please enter a message' : '',
                     message2:
-                        !message2 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                        !message2 && ((target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)) || kind === 'bug')
                             ? 'Please enter a message'
                             : '',
                     message3:
-                        !message3 && target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)
+                        !message3 && ((target_area && EXTENDED_SUPPORT_TOPICS.includes(target_area)) || kind === 'bug')
                             ? 'Please enter a message'
                             : '',
                     kind: !kind ? 'Please choose' : undefined,

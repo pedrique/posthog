@@ -71,12 +71,12 @@ export function SupportModal({ loggedIn = true }: { loggedIn?: boolean }): JSX.E
     const { setSendSupportRequestValue, closeSupportForm } = useActions(supportLogic)
     const { objectStorageAvailable } = useValues(preflightLogic)
 
-    // if (!preflightLogic.values.preflight?.cloud) {
-    //     if (isSupportFormOpen) {
-    //         lemonToast.error(`In-app support isn't provided for self-hosted instances.`)
-    //     }
-    //     return null
-    // }
+    if (!preflightLogic.values.preflight?.cloud) {
+        if (isSupportFormOpen) {
+            lemonToast.error(`In-app support isn't provided for self-hosted instances.`)
+        }
+        return null
+    }
     const dropRef = useRef<HTMLDivElement>(null)
 
     const { setFilesToUpload, filesToUpload, uploading } = useUploadFiles({

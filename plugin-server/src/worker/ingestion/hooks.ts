@@ -388,7 +388,7 @@ export class HookCommander {
             })
             await this.appMetrics.queueMetric({
                 teamId: event.teamId,
-                pluginConfigId: 0, // 0 is hardcoded to mean webhooks
+                pluginConfigId: -2, // -2 is hardcoded to mean webhooks
                 category: 'webhook',
                 successes: 1,
             })
@@ -396,7 +396,7 @@ export class HookCommander {
             await this.appMetrics.queueError(
                 {
                     teamId: event.teamId,
-                    pluginConfigId: 0, // 0 is hardcoded to mean webhooks
+                    pluginConfigId: -2, // -2 is hardcoded to mean webhooks
                     category: 'webhook',
                     failures: 1,
                 },

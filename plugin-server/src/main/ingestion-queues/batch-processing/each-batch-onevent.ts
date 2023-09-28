@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/node'
 import { EachBatchPayload, KafkaMessage } from 'kafkajs'
+import { processOnEventStep } from 'worker/ingestion/event-pipeline/runAsyncHandlersStep'
 
 import { RawClickHouseEvent } from '../../../types'
 import { convertToIngestionEvent } from '../../../utils/event'
@@ -28,7 +29,7 @@ export async function eachMessageAppsOnEventHandlers(
 
         const event = convertToIngestionEvent(clickHouseEvent, skipElementsChain)
         await runInstrumentedFunction({
-            func: () => queue.workerMethods.runAppsOnEventPipeline(event),
+            func: () => processOnEventStep(queue.pluginsServer, event),
             statsKey: `kafka_queue.process_async_handlers_on_event`,
             timeoutMessage: 'After 30 seconds still running runAppsOnEventPipeline',
             timeoutContext: () => ({

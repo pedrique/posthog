@@ -139,8 +139,6 @@ describe('eachBatchX', () => {
                 pluginConfigsPerTeam: new Map(),
             },
             workerMethods: {
-                runAppsOnEventPipeline: jest.fn(),
-                runWebhooksHandlersEventPipeline: jest.fn(),
                 runEventPipeline: jest.fn(() => Promise.resolve({})),
             },
         }
@@ -150,6 +148,7 @@ describe('eachBatchX', () => {
         it('calls runAppsOnEventPipeline when useful', async () => {
             queue.pluginsServer.pluginConfigsPerTeam.set(2, [pluginConfig39])
             await eachBatchAppsOnEventHandlers(createKafkaJSBatch(clickhouseEvent), queue)
+            // TODO fix to jest spy on the actual function
             expect(queue.workerMethods.runAppsOnEventPipeline).toHaveBeenCalledWith({
                 ...event,
                 properties: {

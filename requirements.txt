@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements.in
 #
+./posthog/hogql/grammar/parser
+    # via -r requirements.in
 aiohttp==3.8.5
     # via
     #   -r requirements.in
